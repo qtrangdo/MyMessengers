@@ -1,2 +1,6 @@
-<textarea rows="10" [(ngModel)]="newContent"></textarea>
-<button (click)="onAddPost()">Submit</button>
+<mat-card>
+  <mat-form-field>
+    <textarea matInput rows="10" [(ngModel)]="newContent"></textarea>
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="onAddPost()">Submit</button>
+</mat-card>
