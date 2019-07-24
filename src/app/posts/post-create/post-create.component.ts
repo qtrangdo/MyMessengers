@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Post } from 'src/app/_models/Post.model';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-post-create',
@@ -16,12 +17,13 @@ export class PostCreateComponent implements OnInit {
   ngOnInit() {
   }
 
-  onAddPost() {
+  onAddPost(postForm: NgForm) {
     const newPost: Post = {
-      title: this.postTitle,
-      content: this.postContent
+      title: postForm.value.title,
+      content: postForm.value.content
     };
-    this.postCreated.emit(newPost);
+    postForm.valid && this.postCreated.emit(newPost);
+    return;
   }
 
 }
