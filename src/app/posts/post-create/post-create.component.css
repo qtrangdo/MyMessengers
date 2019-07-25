@@ -6,6 +6,10 @@ mat-spinner {
   margin: auto;
 }
 
+input[type="file"] {
+  visibility: hidden;
+}
+
 label {
   font-weight: bold;
   display: inline-block;
