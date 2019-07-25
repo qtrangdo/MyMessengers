@@ -34,7 +34,7 @@ export class PostsService {
   }
 
   getPost(id: string) {
-    return { ...this.posts.find(p => p.id === id) }
+    return this.http.get<{ message: string, post: PostFromRepo }>(`http://localhost:3000/api/posts/${id}`)
   }
 
   addPost(title: string, content: string) {
@@ -47,10 +47,16 @@ export class PostsService {
       }, err => console.error(err))
   }
 
-  updatePost(id: string, title:string, content: string) {
-    const post = { title, content };
+  updatePost(id: string, title: string, content: string) {
+    const post = { id, title, content };
     this.http.put<{ message: string, postId: string }>(`http://localhost:3000/api/posts/${id}`, post)
-      .subscribe(console.log)
+      .subscribe(() => {
+        const updatedPosts = [...this.posts];
+        const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
+        updatedPosts[oldPostIndex] = post;
+        this.posts = updatedPosts;
+        this.postsUpdated.next([...this.posts])
+      }, err => console.error(err))
   }
 
   deletePost(id: string) {

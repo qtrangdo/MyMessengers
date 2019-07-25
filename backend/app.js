@@ -62,6 +62,27 @@ app.get('/api/posts', async (req, res, next) => {
   }
 })
 
+app.get('/api/posts/:id', async (req, res, next) => {
+  try {
+    if (req.params.id !== "null") {
+      const post = await Post.findById(req.params.id);
+      if (!!post) {
+        return res.status(200).json({
+          message: "Post fetched successfully",
+          post: post
+        })
+      }
+    }
+    return res.status(400).json({
+      message: "No post found"
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error"
+    })
+  }
+})
+
 app.delete('/api/posts/:id', async (req, res, next) => {
   try {
     if (req.params.id !== "null") {
