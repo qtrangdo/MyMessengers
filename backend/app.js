@@ -13,12 +13,13 @@ mongoose.connect("mongodb+srv://user:YuRSoRQL2jXiyTjZ@cluster0-faqcb.mongodb.net
 app.use(bodyParser.json());
 app.use(cors());
 
-app.post('/api/posts', (req, res) => {
+app.post('/api/posts', async (req, res) => {
   const { title, content } = req.body
   const post = new Post({ title, content })
-  post.save();
+  const createdPost = await post.save();
   res.status(201).json({
-    message: "Post added successfully"
+    message: "Post added successfully",
+    postId: createdPost._id
   })
 })
 
@@ -38,12 +39,14 @@ app.get('/api/posts', async (req, res, next) => {
 
 app.delete('/api/posts/:id', async (req, res, next) => {
   try {
-    const postToRemove = await Post.findById(req.params.id);
-    if (!!postToRemove) {
-      await postToRemove.remove();
-      return res.status(201).json({
-        message: "Post deleted"
-      })
+    if (req.params.id !== "null") {
+      const postToRemove = await Post.findById(req.params.id);
+      if (!!postToRemove) {
+        await postToRemove.remove();
+        return res.status(201).json({
+          message: "Post deleted"
+        })
+      }
     }
     return res.status(400).json({
       message: "No post found"
@@ -54,5 +57,6 @@ app.delete('/api/posts/:id', async (req, res, next) => {
     })
   }
 })
+
 
 module.exports = app;
