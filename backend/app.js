@@ -23,6 +23,31 @@ app.post('/api/posts', async (req, res) => {
   })
 })
 
+app.put('/api/posts/:id', async (req, res) => {
+  const { title, content } = req.body;
+  const _id = req.params.id;
+  try {
+    if (_id !== "null") {
+      const postToUpdate = await Post.findById(_id);
+      if (!!postToUpdate) {
+        postToUpdate.title = title;
+        postToUpdate.content = content;
+        await Post.updateOne({ _id: req.params.id }, postToUpdate);
+        return res.status(201).json({
+          message: "Post updated"
+        })
+      }
+    }
+    return res.status(400).json({
+      message: "No post found"
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error"
+    })
+  }
+})
+
 app.get('/api/posts', async (req, res, next) => {
   try {
     const posts = await Post.find();

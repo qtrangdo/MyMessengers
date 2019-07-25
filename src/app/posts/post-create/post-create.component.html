@@ -1,5 +1,5 @@
 <mat-card>
-  <form (ngSubmit)="onAddPost(postForm)" #postForm="ngForm">
+  <form (ngSubmit)="onSavePost(postForm)" #postForm="ngForm">
     <mat-form-field>
       <label for="title">Post Title</label>
       <input matInput type="text" name="title" [(ngModel)]="postTitle" required #title="ngModel">
@@ -10,6 +10,6 @@
       <textarea matInput rows="10" name="content" [(ngModel)]="postContent" required #content="ngModel"></textarea>
       <mat-error *ngIf="content.invalid">Content is required</mat-error>
     </mat-form-field>
-    <button mat-raised-button color="primary" type="submit">Submit</button>
+    <button mat-raised-button color="primary" type="submit">{{mode == "create" ? "Submit" : "Edit"}}</button>
   </form>
 </mat-card>
