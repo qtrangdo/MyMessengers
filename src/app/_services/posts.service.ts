@@ -22,7 +22,7 @@ export class PostsService {
           title: post.title,
           content: post.content
         }
-      }) ))
+      })))
       .subscribe((transformedPosts: Post[]) => {
         this.posts = transformedPosts;
         this.postsUpdated.next([...this.posts]);
@@ -35,9 +35,18 @@ export class PostsService {
 
   addPost(title: string, content: string) {
     const post: Post = { id: null, title, content };
-    this.http.post<void>('http://localhost:3000/api/posts', post)
+    this.http.post<{ message: string }>('http://localhost:3000/api/posts', post)
       .subscribe(() => {
         this.posts.push(post);
+        this.postsUpdated.next([...this.posts])
+      }, err => console.error(err))
+  }
+
+  deletePost(id: string) {
+    this.http.delete<{ message: string }>(`http://localhost:3000/api/posts/${id}`)
+      .subscribe(() => {
+        const updatedPosts = this.posts.filter(post => post.id !== id);
+        this.posts = updatedPosts;
         this.postsUpdated.next([...this.posts])
       }, err => console.error(err))
   }

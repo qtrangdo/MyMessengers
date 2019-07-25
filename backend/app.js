@@ -31,7 +31,26 @@ app.get('/api/posts', async (req, res, next) => {
     })
   } catch (error) {
     res.status(500).json({
-      message: "Error getting data"
+      message: "Server Error"
+    })
+  }
+})
+
+app.delete('/api/posts/:id', async (req, res, next) => {
+  try {
+    const postToRemove = await Post.findById(req.params.id);
+    if (!!postToRemove) {
+      await postToRemove.remove();
+      return res.status(201).json({
+        message: "Post deleted"
+      })
+    }
+    return res.status(400).json({
+      message: "No post found"
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error"
     })
   }
 })
