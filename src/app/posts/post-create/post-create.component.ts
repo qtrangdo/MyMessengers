@@ -48,6 +48,7 @@ export class PostCreateComponent implements OnInit {
     this.form = this.fb.group({
       "title": ['', Validators.required],
       "content": ['', Validators.required],
+      "image": ['', Validators.required]
     })
   }
 
@@ -59,6 +60,14 @@ export class PostCreateComponent implements OnInit {
     this.mode === "edit" && this.postsService.updatePost(this.postId, title, content);
     this.form.reset();
     this.router.navigate(['/']);
+  }
+
+  onImagePicked(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.form.patchValue({ image: file });
+    this.form.get('image').updateValueAndValidity();
+    console.log(file);
+    console.log(this.form)
   }
 
 }
