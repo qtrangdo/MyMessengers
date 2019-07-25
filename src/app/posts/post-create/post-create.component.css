@@ -2,6 +2,10 @@ mat-form-field, textarea {
   width: 100%;
 }
 
+mat-spinner {
+  margin: auto;
+}
+
 label {
   font-weight: bold;
   display: inline-block;
