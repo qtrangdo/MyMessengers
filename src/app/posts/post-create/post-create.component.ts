@@ -34,7 +34,8 @@ export class PostCreateComponent implements OnInit {
           }
           this.form.setValue({
             title: this.post.title,
-            content: this.post.content
+            content: this.post.content,
+            image: this.post.imagePath
           })
           this.isLoading = false;
         });
@@ -58,7 +59,7 @@ export class PostCreateComponent implements OnInit {
     const { title, content, image } = this.form.value;
     this.isLoading = true;
     this.mode === "create" && this.postsService.addPost(title, content, image);
-    this.mode === "edit" && this.postsService.updatePost(this.postId, title, content);
+    this.mode === "edit" && this.postsService.updatePost(this.postId, title, content, image);
     this.form.reset();
     this.router.navigate(['/']);
   }

@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 })
 
 router.post('', multer({ storage }).single("image"), async (req, res) => {
-  const url = req.protocol + '://' +req.get("host");
+  const url = req.protocol + '://' + req.get("host");
   const imagePath = url + "/images/" + req.file.filename;
   const { title, content } = req.body
   const post = new Post({ title, content, imagePath })
@@ -43,8 +43,12 @@ router.post('', multer({ storage }).single("image"), async (req, res) => {
   })
 })
 
-router.put('/:id', async (req, res) => {
-  const { title, content } = req.body;
+router.put('/:id', multer({ storage }).single("image"), async (req, res) => {
+  let { title, content, imagePath } = req.body;
+  if (req.file) {
+    const url = req.protocol + '://' + req.get("host");
+    imagePath = url + "/images/" + req.file.filename;
+  }
   const _id = req.params.id;
   try {
     if (_id !== "null") {
@@ -52,9 +56,11 @@ router.put('/:id', async (req, res) => {
       if (!!postToUpdate) {
         postToUpdate.title = title;
         postToUpdate.content = content;
+        postToUpdate.imagePath = imagePath
         await Post.updateOne({ _id: req.params.id }, postToUpdate);
         return res.status(201).json({
-          message: "Post updated"
+          message: "Post updated",
+          post: {id: postToUpdate._id, title, content, imagePath}
         })
       }
     }

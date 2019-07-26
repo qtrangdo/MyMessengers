@@ -35,7 +35,7 @@ export class PostsService {
   }
 
   getPost(id: string) {
-    return this.http.get<{ message: string, post: PostFromRepo }>(`http://localhost:3000/api/posts/${id}`)
+    return this.http.get<{ message: string, post: PostFromRepo, imagePath: string }>(`http://localhost:3000/api/posts/${id}`)
   }
 
   addPost(title: string, content: string, image: File) {
@@ -43,7 +43,7 @@ export class PostsService {
     postData.append("title", title);
     postData.append("content", content);
     postData.append("image", image, title);
-    
+
     this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData)
       .subscribe((data) => {
         const post: Post = data.post;
@@ -52,13 +52,22 @@ export class PostsService {
       }, err => console.error(err))
   }
 
-  updatePost(id: string, title: string, content: string) {
-    const post: Post = { id, title, content, imagePath: null };
-    this.http.put<{ message: string, postId: string }>(`http://localhost:3000/api/posts/${id}`, post)
-      .subscribe(() => {
+  updatePost(id: string, title: string, content: string, image: File | string) {
+    let postData: FormData | Post;
+    if (typeof (image) === "object") {
+      postData = new FormData();
+      postData.append("title", title);
+      postData.append("content", content);
+      postData.append("image", image, title);
+    } else {
+      postData = { id, title, content, imagePath: image };
+    }
+    this.http.put<{ message: string, post: Post }>(`http://localhost:3000/api/posts/${id}`, postData)
+      .subscribe((data) => {
+        console.log(data)
         const updatedPosts = [...this.posts];
         const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
-        updatedPosts[oldPostIndex] = post;
+        updatedPosts[oldPostIndex] = {...data.post};
         this.posts = updatedPosts;
         this.postsUpdated.next([...this.posts])
       }, err => console.error(err))
