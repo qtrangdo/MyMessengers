@@ -75,11 +75,20 @@ router.put('/:id', multer({ storage }).single("image"), async (req, res) => {
 })
 
 router.get('', async (req, res, next) => {
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
   try {
-    const posts = await Post.find();
+    let posts;
+    const maxPosts = await Post.count();
+    if (!!pageSize && !!currentPage) {
+      posts = await Post.find().skip(pageSize * (currentPage - 1)).limit(pageSize);
+    } else {
+      posts = await Post.find()
+    }
     res.status(200).json({
       message: "Posts fetched successfully",
-      posts: posts
+      posts: posts,
+      maxPosts
     })
   } catch (error) {
     res.status(500).json({
