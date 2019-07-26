@@ -3,6 +3,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Post } from 'src/app/_models/Post.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PostsService } from 'src/app/_services/posts.service';
+import { mimeType } from './mime-type.validator';
 
 @Component({
   selector: 'app-post-create',
@@ -49,7 +50,7 @@ export class PostCreateComponent implements OnInit {
     this.form = this.fb.group({
       "title": ['', Validators.required],
       "content": ['', Validators.required],
-      "image": ['', Validators.required]
+      "image": ['', { validators: Validators.required, asyncValidators: mimeType }]
     })
   }
 
