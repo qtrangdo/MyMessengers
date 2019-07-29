@@ -4,8 +4,10 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
-import { MatInputModule, MatCardModule, MatButtonModule,
-  MatToolbarModule, MatExpansionModule, MatProgressSpinnerModule, MatPaginatorModule } from '@angular/material';
+import {
+  MatInputModule, MatCardModule, MatButtonModule,
+  MatToolbarModule, MatExpansionModule, MatProgressSpinnerModule, MatPaginatorModule, MatDialogModule
+} from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +16,7 @@ import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
+import { ErrorComponent } from './error/error.component';
 import { AuthInterceptorProvide } from './_services/auth-interceptor';
 import { ErrorInterceptorProvide } from './_services/error-interceptor';
 
@@ -24,7 +27,8 @@ import { ErrorInterceptorProvide } from './_services/error-interceptor';
     HeaderComponent,
     PostListComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -39,9 +43,11 @@ import { ErrorInterceptorProvide } from './_services/error-interceptor';
     MatExpansionModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
+    MatDialogModule,
     HttpClientModule
   ],
   providers: [AuthInterceptorProvide, ErrorInterceptorProvide],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ErrorComponent]
 })
 export class AppModule { }
