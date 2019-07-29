@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const Post = require('../models/post');
+const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
 
@@ -26,7 +27,7 @@ const storage = multer.diskStorage({
   }
 })
 
-router.post('', multer({ storage }).single("image"), async (req, res) => {
+router.post('', checkAuth, multer({ storage }).single("image"), async (req, res) => {
   const url = req.protocol + '://' + req.get("host");
   const imagePath = url + "/images/" + req.file.filename;
   const { title, content } = req.body
@@ -43,7 +44,7 @@ router.post('', multer({ storage }).single("image"), async (req, res) => {
   })
 })
 
-router.put('/:id', multer({ storage }).single("image"), async (req, res) => {
+router.put('/:id', checkAuth, multer({ storage }).single("image"), async (req, res) => {
   let { title, content, imagePath } = req.body;
   if (req.file) {
     const url = req.protocol + '://' + req.get("host");
@@ -79,7 +80,7 @@ router.get('', async (req, res, next) => {
   const currentPage = +req.query.page;
   try {
     let posts;
-    const maxPosts = await Post.count();
+    const maxPosts = await Post.countDocuments();
     if (!!pageSize && !!currentPage) {
       posts = await Post.find().skip(pageSize * (currentPage - 1)).limit(pageSize);
     } else {
@@ -118,7 +119,7 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', checkAuth, async (req, res, next) => {
   try {
     if (req.params.id !== "null") {
       const postToRemove = await Post.findById(req.params.id);
