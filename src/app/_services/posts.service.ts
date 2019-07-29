@@ -56,7 +56,8 @@ export class PostsService {
         // const post: Post = data.post;
         // this.posts.push(post);
         // this.postsUpdated.next([...this.posts])
-        this.router.navigate['/'];
+        console.log(data)
+        this.router.navigate(['/']);
       }, err => console.error(err))
   }
 
@@ -77,7 +78,7 @@ export class PostsService {
         // updatedPosts[oldPostIndex] = { ...data.post };
         // this.posts = updatedPosts;
         // this.postsUpdated.next([...this.posts])
-        this.router.navigate['/'];
+        this.router.navigate(['/']);
       }, err => console.error(err))
   }
 

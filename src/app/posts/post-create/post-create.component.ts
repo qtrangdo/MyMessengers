@@ -61,7 +61,6 @@ export class PostCreateComponent implements OnInit {
     this.mode === "create" && this.postsService.addPost(title, content, image);
     this.mode === "edit" && this.postsService.updatePost(this.postId, title, content, image);
     this.form.reset();
-    this.router.navigate(['/']);
   }
 
   onImagePicked(event: Event) {
