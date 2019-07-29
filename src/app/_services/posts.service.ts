@@ -43,7 +43,7 @@ export class PostsService {
   }
 
   getPost(id: string) {
-    return this.http.get<{ message: string, post: PostFromRepo, imagePath: string }>(`http://localhost:3000/api/posts/${id}`)
+    return this.http.get<{ message: string, post: PostFromRepo, imagePath: string, creator: string }>(`http://localhost:3000/api/posts/${id}`)
   }
 
   addPost(title: string, content: string, image: File) {
