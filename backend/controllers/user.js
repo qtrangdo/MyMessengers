@@ -20,7 +20,7 @@ router.post('/signup', async (req, res, next) => {
     })
   } catch (error) {
     res.status(500).json({
-      message: "Error",
+      message: "User already exists",
       error
     })
   }
@@ -31,13 +31,13 @@ router.post('/login', async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
       return res.status(401).json({
-        message: "Unauthozired"
+        message: "Invalid Credentials"
       })
     }
     const passwordMatched = await bcrypt.compare(req.body.password, user.password);
     if (!passwordMatched) {
       return res.status(401).json({
-        message: "Unauthozired"
+        message: "Invalid Credentials"
       })
     }
     // Log user in

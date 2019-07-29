@@ -15,6 +15,7 @@ import { PostListComponent } from './posts/post-list/post-list.component';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { AuthInterceptorProvide } from './_services/auth-interceptor';
+import { ErrorInterceptorProvide } from './_services/error-interceptor';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { AuthInterceptorProvide } from './_services/auth-interceptor';
     MatPaginatorModule,
     HttpClientModule
   ],
-  providers: [AuthInterceptorProvide],
+  providers: [AuthInterceptorProvide, ErrorInterceptorProvide],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
