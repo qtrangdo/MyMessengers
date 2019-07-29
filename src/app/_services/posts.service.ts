@@ -25,7 +25,8 @@ export class PostsService {
               id: post._id,
               title: post.title,
               content: post.content,
-              imagePath: post.imagePath
+              imagePath: post.imagePath,
+              creator: post.creator
             }
           }),
           maxPosts: data.maxPosts
@@ -69,7 +70,7 @@ export class PostsService {
       postData.append("content", content);
       postData.append("image", image, title);
     } else {
-      postData = { id, title, content, imagePath: image };
+      postData = { id, title, content, imagePath: image, creator: null };
     }
     this.http.put<{ message: string, post: Post }>(`http://localhost:3000/api/posts/${id}`, postData)
       .subscribe((data) => {

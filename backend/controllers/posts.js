@@ -31,7 +31,8 @@ router.post('', checkAuth, multer({ storage }).single("image"), async (req, res)
   const url = req.protocol + '://' + req.get("host");
   const imagePath = url + "/images/" + req.file.filename;
   const { title, content } = req.body
-  const post = new Post({ title, content, imagePath })
+  const creator = req.userData.userId;
+  const post = new Post({ title, content, imagePath, creator })
   const createdPost = await post.save();
   res.status(201).json({
     message: "Post added successfully",
@@ -39,7 +40,8 @@ router.post('', checkAuth, multer({ storage }).single("image"), async (req, res)
       id: createdPost._id,
       title: createdPost.title,
       content: createdPost.content,
-      imagePath: createdPost.imagePath
+      imagePath: createdPost.imagePath,
+      creator: createdPost.creator
     }
   })
 })
@@ -55,13 +57,18 @@ router.put('/:id', checkAuth, multer({ storage }).single("image"), async (req, r
     if (_id !== "null") {
       const postToUpdate = await Post.findById(_id);
       if (!!postToUpdate) {
+        //check authorization
+        if (postToUpdate.creator.toString() !== req.userData.userId) {
+          return res.status(401).json({ message: "Unauthorized" });
+        }
+        //
         postToUpdate.title = title;
         postToUpdate.content = content;
         postToUpdate.imagePath = imagePath
         await Post.updateOne({ _id: req.params.id }, postToUpdate);
         return res.status(201).json({
           message: "Post updated",
-          post: {id: postToUpdate._id, title, content, imagePath}
+          post: { id: postToUpdate._id, title, content, imagePath, creator: req.userData.userId }
         })
       }
     }
@@ -124,6 +131,11 @@ router.delete('/:id', checkAuth, async (req, res, next) => {
     if (req.params.id !== "null") {
       const postToRemove = await Post.findById(req.params.id);
       if (!!postToRemove) {
+        //check authorization
+        if (postToRemove.creator.toString() !== req.userData.userId) {
+          return res.status(401).json({ message: "Unauthorized" });
+        }
+        //
         await postToRemove.remove();
         return res.status(201).json({
           message: "Post deleted"
