@@ -1,26 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Post } from 'src/app/_models/Post.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PostsService } from 'src/app/_services/posts.service';
 import { mimeType } from './mime-type.validator';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/_services/auth.service';
 
 @Component({
   selector: 'app-post-create',
   templateUrl: './post-create.component.html',
   styleUrls: ['./post-create.component.css']
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
   mode = 'create';
   isLoading = false;
   postId: string;
   post: Post;
   form: FormGroup;
   imagePreview: string;
+  private authListenerSub: Subscription;
 
-  constructor (private postsService: PostsService, private route: ActivatedRoute, private router: Router, private fb: FormBuilder) { }
+  constructor (
+    private postsService: PostsService,
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private router: Router,
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
+    this.authListenerSub = this.authService.getAuthStatusListener()
+      .subscribe(() => this.isLoading = false);
     this.createForm();
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has("postId")) {
@@ -44,6 +55,10 @@ export class PostCreateComponent implements OnInit {
         this.postId = null;
       }
     })
+  }
+
+  ngOnDestroy() {
+    this.authListenerSub.unsubscribe();
   }
 
   createForm() {
